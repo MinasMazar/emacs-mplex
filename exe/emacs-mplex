@@ -1,0 +1,27 @@
+require "thor"
+
+class EmacsMPlex < Thor
+
+  no_commands do
+
+    def symlink_emacs_dir custom, system = "~/.emacs.d"
+      puts "ln -sf #{custom} #{system}"
+      system "rm #{system}"
+      system "ln -sf #{custom} #{system}"
+    end
+
+    def profile_path profile
+      File.expand_path File.join "~", ".emacs.d.#{profile}"
+    end
+
+  end
+
+  desc "start <profile>", "Exec emacs <>profile> profile with init in: <init_base_dir>"
+  def start(profile)
+    symlink_emacs_dir profile_path profile
+    sleep 0.1
+    system "emacs"
+  end
+end
+
+EmacsMPlex.start ARGV
